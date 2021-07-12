@@ -15,6 +15,7 @@ public class MainManager : MonoBehaviour
     
     private bool m_Started = false;
     private int m_Points;
+    private string m_name;
     
     private bool m_GameOver = false;
 
@@ -36,6 +37,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        m_name = GameManager.Instance.currentName;
     }
 
     private void Update()
@@ -55,6 +58,16 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            if(GameManager.Instance != null)
+            {
+                if(GameManager.Instance.score < m_Points)
+                {
+                    GameManager.Instance.score = m_Points;
+                    GameManager.Instance.playerName = GameManager.Instance.currentName;
+                    GameManager.Instance.SaveData();
+                }
+                
+            }
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -65,7 +78,7 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = m_name + " " +  $"Score: {m_Points}";
     }
 
     public void GameOver()
@@ -73,4 +86,6 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
+
 }
